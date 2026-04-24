@@ -1,0 +1,10 @@
+CHR:
+  hosts:
+    CHR1:
+      ansible_host: 192.168.100.2
+      ansible_port: 13231
+      ansible_user: admin
+    CHR2:
+      ansible_host: 192.168.100.3
+      ansible_port: 13231
+      ansible_user: admin
