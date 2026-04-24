@@ -30,7 +30,7 @@ sudo apt update && sudo apt install python3-pip && sudo pip3 install ansible --b
 
 ![vm1](img/image1.png)
 
-# 4.1 Настрйока Wireguard
+# 4.1 Настройка Wireguard
 
 Снова воспользовалась [инструкцией](https://help.mikrotik.com/docs/spaces/ROS/pages/69664792/WireGuard), а конкретнее `RoadWarrior WireGuard tunnel` и выполнила на CHR следующее:
 
@@ -50,7 +50,7 @@ add address=192.168.100.2/24 interface=wireguard1
 ```
 
 ```
-/ip firewall filter add action=accept chain=input dst-port=51820 protocol=udp src-address=103.76.54.9
+/ip firewall filter add action=accept chain=input dst-port=51820 protocol=udp src-address=<pub ip Linux>
 ```
 
 А на ВМ это (вот тоже [инструкция](https://serverspace.ru/support/help/kak-ustanovit-wireguard-vpn-client-na-ubuntu-linux/?utm_source=google.com&utm_medium=organic&utm_campaign=google.com&utm_referrer=google.com)):
@@ -97,8 +97,6 @@ sudo systemctl enable wg-quick@wg0.service
 
 
 # ?. Полезные ссылки
-[CHR: installing on VirtualBox](https://help.mikrotik.com/docs/spaces/ROS/pages/262864931/CHR+installing+on+VirtualBox)
-
-[WireGuard - RouterOS - MikroTik Documentation](https://help.mikrotik.com/docs/spaces/ROS/pages/69664792/WireGuard)
-
-[Wireguard Linux](https://serverspace.ru/support/help/kak-ustanovit-wireguard-vpn-client-na-ubuntu-linux/?utm_source=google.com&utm_medium=organic&utm_campaign=google.com&utm_referrer=google.com)
+- [CHR: installing on VirtualBox](https://help.mikrotik.com/docs/spaces/ROS/pages/262864931/CHR+installing+on+VirtualBox)
+- [WireGuard - RouterOS - MikroTik Documentation](https://help.mikrotik.com/docs/spaces/ROS/pages/69664792/WireGuard)
+- [Wireguard Linux](https://serverspace.ru/support/help/kak-ustanovit-wireguard-vpn-client-na-ubuntu-linux/?utm_source=google.com&utm_medium=organic&utm_campaign=google.com&utm_referrer=google.com)
