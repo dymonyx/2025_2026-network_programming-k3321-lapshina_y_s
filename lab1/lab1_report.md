@@ -98,5 +98,7 @@ sudo systemctl enable wg-quick@wg0.service
 
 # ?. Полезные ссылки
 [CHR: installing on VirtualBox](https://help.mikrotik.com/docs/spaces/ROS/pages/262864931/CHR+installing+on+VirtualBox)
+
 [WireGuard - RouterOS - MikroTik Documentation](https://help.mikrotik.com/docs/spaces/ROS/pages/69664792/WireGuard)
+
 [Wireguard Linux](https://serverspace.ru/support/help/kak-ustanovit-wireguard-vpn-client-na-ubuntu-linux/?utm_source=google.com&utm_medium=organic&utm_campaign=google.com&utm_referrer=google.com)
