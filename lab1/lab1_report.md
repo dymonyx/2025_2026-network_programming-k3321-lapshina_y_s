@@ -49,6 +49,10 @@ add address=192.168.100.2/24 interface=wireguard1
 /interface wireguard peers add interface=wireguard1 public-key="<pub key Linux>" allowed-address=192.168.100.1/32 endpoint-address=<pub ip Linux> endpoint-port=51820 persistent-keepalive=25
 ```
 
+```
+/ip firewall filter add action=accept chain=input dst-port=51820 protocol=udp src-address=103.76.54.9
+```
+
 ![wg1](img/image4.png)
 
 
