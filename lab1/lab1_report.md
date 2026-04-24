@@ -11,7 +11,7 @@
 
 # 1. Создание ВМ
 
-Я развернула ВМ в Yandex Cloud, прокинув для доступа свой ssh ключ. Я смогла выбрать 24.04 версию ubuntu, поэтому обновление не понадобилось (ну, почти).
+Я развернула ВМ в Yandex Cloud, прокинув для доступа свой ssh ключ. Я смогла выбрать 24.04 версию ubuntu, поэтому обновление не понадобилось (ну, почти). На всякий случай добавила правило на входящий и иходящий трафик в группе безопасности на все порты в консоли облака.
 
 ![vm](img/image.png)
 
@@ -26,7 +26,7 @@ sudo apt update && sudo apt install python3-pip && sudo pip3 install ansible --b
 
 # 3. Установка CHR
 
-Всё выполняла по [инструкции](https://help.mikrotik.com/docs/spaces/ROS/pages/262864931/CHR+installing+on+VirtualBox): скачала vdi, создала ВМ с CHR в virtualbox:
+Всё выполняла по [инструкции](https://help.mikrotik.com/docs/spaces/ROS/pages/262864931/CHR+installing+on+VirtualBox): скачала vdi, создала ВМ с CHR в virtualbox (оставив в качестве сетевого адаптера NAT):
 
 ![vm1](img/image1.png)
 
@@ -53,9 +53,6 @@ add address=192.168.100.2/24 interface=wireguard1
 /ip firewall filter add action=accept chain=input dst-port=51820 protocol=udp src-address=103.76.54.9
 ```
 
-![wg1](img/image4.png)
-
-
 А на ВМ это (вот тоже [инструкция](https://serverspace.ru/support/help/kak-ustanovit-wireguard-vpn-client-na-ubuntu-linux/?utm_source=google.com&utm_medium=organic&utm_campaign=google.com&utm_referrer=google.com)):
 
 ```
@@ -80,16 +77,24 @@ PublicKey = <pub key CHR>
 AllowedIPs = 192.168.100.2/32
 ```
 
+![wh12](img/image5.png)
+
 # 4.2 Результат
 
-Поднимем wireguard, посмотрим на конфиг и пропингуем CHR:
+Поднимем wireguard, посмотрим на конфиг, заэнейблим сервис и пропингуем CHR:
 
 ```
 sudo wg-quick up wg0
 sudo wg show
+sudo systemctl enable wg-quick@wg0.service
 ```
 
-![wg2](image5.png)
+![wh2](img/image4.png)
+
+Ну, и посмотрим на то, что получилось на CHR:
+
+![CHR1](img/image3.png)
+
 
 # ?. Полезные ссылки
 [CHR: installing on VirtualBox](https://help.mikrotik.com/docs/spaces/ROS/pages/262864931/CHR+installing+on+VirtualBox)
