@@ -24,14 +24,14 @@ sudo sysctl -w net.ipv4.ip_forward=1
 
 Так как для ансибла нужен доступ к chr по ssh, то я выполнила проверку активности ssh с помощью `/ip service print`, и ssh уже был включен:
 
-![pic2](image-1.png)
+![pic2](img/image-1.png)
 
 Ещё заменила пароль у админа, чтобы не было проблем с интерактивным вводом при подключении ансибла.
 
 # 2.1 Ansible
 Создала костяк директории с ансиблом, решила, что логика настройки будет реализована в роли, которая будет переиспользована в плейбуке. Инициализировала структуру роли с помощью `ansible-galaxy role init setup_chr`. Помимо роли с логикой настройки логина/пароля, ntp client, ospf я написала два плейбука - collect_facts и setup_chr - первый собирает конфиг ospf, а второй запускает роль с настройкой. Отдельно оформила файл inventory.yml (содержит chr'ы и переменные подключения), ansible.cfg (содержит настройки для ансибла и его подключения) и requirements.yml (содержит необходимые для работы коллекции). Итого:
 
-![pic3](image-2.png)
+![pic3](img/image-2.png)
 
 Переместила директорию ансибла со всем содержимым на ВМ:
 ```
@@ -51,7 +51,7 @@ python3 -m pip install ansible-pylibssh --break-system-packages
 
 Запустила плейбук с настройкой:
 
-![pic4](image-3.png)
+![pic4](img/image-3.png)
 
 # 2.2 Результат
 
@@ -62,15 +62,17 @@ python3 -m pip install ansible-pylibssh --break-system-packages
 /user print detail
 ```
 
-![pic5](image-4.png)
+![pic5](img/image-4.png)
 
 Запустим `collect_facts.yml`:
 
-![pic6](image-5.png)
+![pic6](img/image-5.png)
 
 Итоговые файлы конфигов сохранены в `outputs/<CHR1, CHR2>/collect.txt`.
 
 # 3. Схема
+
+![pic6](img/image-6.png)
 
 # ?. Полезные ссылки
 - [Routeros commands ansible docs](https://docs.ansible.com/projects/ansible/latest/collections/community/routeros/command_module.html)
