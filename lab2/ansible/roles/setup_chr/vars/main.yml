@@ -1,2 +1,5 @@
 ---
 # vars file for setup_chr
+ntp_server: pool.ntp.org
+# OSPF peer IP for static-neighbor on wireguard1 (without interface suffix).
+ospf_neighbor: 192.168.100.2

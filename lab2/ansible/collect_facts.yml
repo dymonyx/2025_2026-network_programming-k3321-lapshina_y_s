@@ -1,0 +1,59 @@
+---
+- name: Collect CHR data
+  hosts: CHR
+  gather_facts: false
+
+  vars:
+    output_dir: "./outputs"
+    collect_commands:
+      - /routing ospf neighbor print detail
+      - /routing ospf instance print detail
+      - /routing ospf area print detail
+      - /routing ospf interface print detail
+      - /routing ospf interface-template print detail
+      - /routing ospf static-neighbor print detail
+      - /ip route print detail where ospf
+      - /export compact hide-sensitive
+
+  tasks:
+    - name: Create output dir
+      ansible.builtin.file:
+        path: "{{ output_dir }}/{{ inventory_hostname }}"
+        state: directory
+        mode: "0755"
+      delegate_to: localhost
+
+    - name: Collect commands
+      community.routeros.command:
+        commands:
+          - "{{ item }}"
+      loop: "{{ collect_commands }}"
+      register: collected
+      changed_when: false
+      failed_when: false
+      ignore_errors: true
+      vars:
+        ansible_command_timeout: 15
+
+    - name: Save output
+      ansible.builtin.copy:
+        dest: "{{ output_dir }}/{{ inventory_hostname }}/collect.txt"
+        mode: "0755"
+        content: |
+          # Device: {{ inventory_hostname }}
+          # Host: {{ ansible_host }}
+
+          {% for r in collected.results %}
+          ==============================
+          {{ r.item }}
+          ==============================
+
+          {% if r.failed | default(false) %}
+          FAILED/TIMEOUT:
+          {{ r.msg | default('unknown error') }}
+          {% else %}
+          {{ r.stdout[0] | default('empty') }}
+          {% endif %}
+
+          {% endfor %}
+      delegate_to: localhost

@@ -1,0 +1,96 @@
+# Device: CHR2
+# Host: 192.168.100.3
+
+==============================
+/routing ospf neighbor print detail
+==============================
+
+Flags: V - VIRTUAL; D - DYNAMIC 
+ 0  D instance=inst area=backbonev2 interface=wireguard1 address=192.168.100.2 
+      priority=128 router-id=192.168.100.2 dr=192.168.100.3 bdr=192.168.100.2 
+      state="Full" state-changes=6 adjacency=11m51s timeout=40s
+
+==============================
+/routing ospf instance print detail
+==============================
+
+Flags: X - DISABLED, I - INACTIVE 
+ 0   name="inst" version=2 vrf=main router-id=192.168.100.3
+
+==============================
+/routing ospf area print detail
+==============================
+
+Flags: X - DISABLED, I - INACTIVE, D - DYNAMIC; T - TRANSIT-CAPABLE 
+ 0    name="backbonev2" instance=inst area-id=0.0.0.0 type=default
+
+==============================
+/routing ospf interface print detail
+==============================
+
+Flags: D - DYNAMIC 
+ 0 D interface=wireguard1 address=192.168.100.3/24 area=backbonev2 state=dr 
+     network-type=nbma bdr=192.168.100.2 cost=1 priority=128 use-bfd=no 
+     retransmit-interval=5s transmit-delay=1s hello-interval=10s 
+     dead-interval=40s
+
+==============================
+/routing ospf interface-template print detail
+==============================
+
+Flags: X - DISABLED, I - INACTIVE 
+ 0   area=backbonev2 instance-id=0 networks=192.168.100.0/24 type=nbma 
+     retransmit-interval=5s transmit-delay=1s hello-interval=10s 
+     dead-interval=40s priority=128 cost=1
+
+==============================
+/routing ospf static-neighbor print detail
+==============================
+
+Flags: X - DISABLED, I - INACTIVE 
+ 0   area=backbonev2 address=192.168.100.2%wireguard1 instance-id=0 
+     poll-interval=2m
+
+==============================
+/ip route print detail where ospf
+==============================
+
+empty
+
+==============================
+/export compact hide-sensitive
+==============================
+
+# 2026-04-28 09:57:39 by RouterOS 7.22.2
+# system id = peUjCHn8ZLD
+#
+/interface ethernet
+set [ find default-name=ether1 ] disable-running-check=no
+/interface wireguard
+add listen-port=13231 mtu=1420 name=wireguard1
+/routing ospf instance
+add disabled=no name=inst router-id=192.168.100.3
+/routing ospf area
+add instance=inst name=backbonev2
+/interface wireguard peers
+add allowed-address=192.168.100.1/32,192.168.100.2/32 endpoint-address=\
+    103.76.54.9 endpoint-port=51820 interface=wireguard1 name=peer1 \
+    persistent-keepalive=25s public-key=\
+    "W6NW2nXwVZZFEbkyZ6Z32GPgC1S5QaJTAbdwEv5mxno="
+/ip address
+add address=192.168.100.3/24 interface=wireguard1 network=192.168.100.0
+/ip dhcp-client
+add interface=ether1 name=client1
+/ip firewall filter
+add action=accept chain=input dst-port=51820 protocol=udp src-address=\
+    103.76.54.9
+/routing ospf interface-template
+add area=backbonev2 networks=192.168.100.0/24 type=nbma
+/routing ospf static-neighbor
+add address=192.168.100.2%wireguard1 area=backbonev2
+/system ntp client
+set enabled=yes
+/system ntp client servers
+add address=pool.ntp.org
+
+agonek@network-prog

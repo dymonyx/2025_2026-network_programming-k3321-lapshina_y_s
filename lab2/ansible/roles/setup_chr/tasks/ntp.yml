@@ -1,0 +1,19 @@
+---
+- name: Enable NTP client
+  community.routeros.command:
+    commands:
+      - /system ntp client set enabled=yes
+
+- name: Check NTP server
+  community.routeros.command:
+    commands:
+      - /system ntp client servers print count-only where address={{ ntp_server
+        }}
+  register: ntp_pool_check
+  changed_when: false
+
+- name: Add NTP server
+  community.routeros.command:
+    commands:
+      - /system ntp client servers add address={{ ntp_server }}
+  when: ntp_pool_check.stdout[0] | int == 0

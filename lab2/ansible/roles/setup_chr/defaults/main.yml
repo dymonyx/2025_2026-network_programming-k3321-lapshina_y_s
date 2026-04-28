@@ -1,2 +1,4 @@
 ---
 # defaults file for setup_chr
+inventory_hostname: router1
+ansible_host: 192.168.1.1

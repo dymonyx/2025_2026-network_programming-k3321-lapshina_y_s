@@ -1,38 +1,48 @@
-Role Name
+setup_chr
 =========
 
-A brief description of the role goes here.
+An Ansible role for configuring MikroTik Cloud Hosted Router (CHR) with core networking services.
+
+Description
+-----------
+
+This role automates the configuration of CHR routers, including:
+- User credentials setup (login and password)
+- NTP configuration for time synchronization
+- OSPF routing protocol setup
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+- Ansible >= 2.1
+- SSH access to MikroTik CHR router with administrative privileges
+- `community.routeros` module (for MikroTik configuration management)
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+Default values are located in `defaults/main.yml` and `vars/main.yml`. Key variables:
 
-Dependencies
-------------
-
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+- `inventory_hostname` - hostname of the CHR router (default: `router1`)
+- `ansible_host` - IP address of the CHR router (default: `192.168.1.1`)
+- `ntp_server` - IP address of NTP server for time synchronization
+- `ospf_neighbor` - IP address of OSPF neighbor used in `/routing ospf static-neighbor` on `wireguard1` (example: `192.168.100.2`)
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+```yaml
+- hosts: chr_routers
+  roles:
+    - setup_chr
+```
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+Author
+------
+
+Lapshina Yulia
 
 License
 -------
 
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Apache-2.0

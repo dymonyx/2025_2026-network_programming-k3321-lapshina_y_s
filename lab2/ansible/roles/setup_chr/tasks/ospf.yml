@@ -1,0 +1,59 @@
+---
+- name: Configure OSPF
+  block:
+    - name: Check OSPF instance
+      community.routeros.command:
+        commands:
+          - ":put [:len [/routing ospf instance find where name=\"inst\"]]"
+      register: ospf_instance_check
+      changed_when: false
+
+    - name: Create OSPF instance
+      community.routeros.command:
+        commands:
+          - /routing ospf instance add name=inst version=2 router-id={{
+            ansible_host }} disabled=no
+      when: (ospf_instance_check.stdout[0] | trim | int) == 0
+
+    - name: Check OSPF area
+      community.routeros.command:
+        commands:
+          - ":put [:len [/routing ospf area find where name=\"backbonev2\"]]"
+      register: ospf_area_check
+      changed_when: false
+
+    - name: Create OSPF area
+      community.routeros.command:
+        commands:
+          - /routing ospf area add name=backbonev2 instance=inst area-id=0.0.0.0
+      when: (ospf_area_check.stdout[0] | trim | int) == 0
+
+    - name: Check OSPF interface-template
+      community.routeros.command:
+        commands:
+          - ":put [:len [/routing ospf interface-template find where
+            area=backbonev2]]"
+      register: ospf_template_check
+      changed_when: false
+
+    - name: Create OSPF interface-template
+      community.routeros.command:
+        commands:
+          - /routing ospf interface-template add area=backbonev2
+            networks=192.168.100.0/24 type=nbma
+      when: (ospf_template_check.stdout[0] | trim | int) == 0
+
+    - name: Check OSPF static neighbor
+      community.routeros.command:
+        commands:
+          - ":put [:len [/routing ospf static-neighbor find where address=\"{{
+            ospf_neighbor }}%wireguard1\"]]"
+      register: ospf_neighbor_check
+      changed_when: false
+
+    - name: Add OSPF static neighbor
+      community.routeros.command:
+        commands:
+          - /routing ospf static-neighbor add address={{ ospf_neighbor
+            }}%wireguard1 area=backbonev2
+      when: (ospf_neighbor_check.stdout[0] | trim | int) == 0

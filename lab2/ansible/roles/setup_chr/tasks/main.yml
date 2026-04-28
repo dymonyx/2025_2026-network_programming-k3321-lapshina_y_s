@@ -1,2 +1,9 @@
 ---
-# tasks file for setup_chr
+- name: Setup login and password
+  ansible.builtin.import_tasks: init.yml
+
+- name: Setup NTP
+  ansible.builtin.import_tasks: ntp.yml
+
+- name: Setup OSPF
+  ansible.builtin.import_tasks: ospf.yml
